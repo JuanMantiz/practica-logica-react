@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Geist Variable", "Geist", "Inter", "Segoe UI", system-ui,
+    -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "Geist Mono Variable", "Geist Mono", "SFMono-Regular", Consolas,
+    "Liberation Mono", monospace;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-[#0a0a0a] font-sans text-zinc-300 antialiased;
+  }
+
+  ::selection {
+    @apply bg-white text-black;
+  }
+}
