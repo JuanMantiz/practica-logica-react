@@ -4,7 +4,7 @@ const ALUMNOS = [
   { nombre: 'María', calificaciones: [85, 90, 88] },
 ]
 
-/** Calcula el promedio de las calificaciones de un alumno. */
+// Calcula el promedio del alumno
 const calcularPromedio = (calificaciones: number[]): number => {
   if (calificaciones.length === 0) {
     return 0
@@ -18,7 +18,7 @@ const calcularPromedio = (calificaciones: number[]): number => {
   return suma / calificaciones.length
 }
 
-/** Convierte un promedio numérico en una letra de calificación. */
+// Obtiene la letra del promedio
 const obtenerLetra = (promedio: number): string => {
   if (promedio >= 90) {
     return 'A'
@@ -33,95 +33,68 @@ const obtenerLetra = (promedio: number): string => {
   }
 }
 
-/** Indica si un alumno está aprobado con un promedio mínimo de 70. */
+// Comprueba si el alumno aprobó
 const estaAprobado = (promedio: number): boolean => promedio >= 70
 
-/**
- * Ejercicio 09: sistema de calificaciones.
- * Calcula promedios, asigna letras y determina el estado de cada alumno.
- */
+// Muestra las calificaciones de los alumnos
 export const SistemaCalificaciones = () => {
   return (
-    <section className="group flex h-full flex-col overflow-hidden rounded-lg border border-zinc-800 bg-[#111111] transition-all duration-200 hover:border-zinc-700 hover:bg-zinc-900">
-      <header className="flex items-center justify-between border-b border-zinc-800/80 px-5 py-3">
-        <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.16em]">
-          <span className="text-zinc-600">09</span>
-          <span className="text-zinc-700">/</span>
-          <span className="text-zinc-400">grades</span>
-        </div>
-        <div className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-wider text-zinc-600">
-          <span className="size-1 rounded-full bg-zinc-600 transition-colors group-hover:bg-white" />
-          ready
-        </div>
-      </header>
+    <section className="mb-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+      <h2 className="text-xl font-bold text-gray-800">
+        Sistema de calificaciones
+      </h2>
+      <p className="mt-1 text-sm text-gray-500">
+        Promedio por alumno, letra asignada y resultado final.
+      </p>
 
-      <div className="flex flex-1 flex-col p-5">
-        <h2 className="text-[15px] font-semibold tracking-tight text-white">
-          Sistema de calificaciones
-        </h2>
-        <p className="mt-1 text-xs leading-5 text-zinc-500">
-          Promedio por alumno, letra asignada y estado final.
-        </p>
+      <div className="mt-4 space-y-3">
+        {ALUMNOS.map((alumno) => {
+          const promedio: number = calcularPromedio(alumno.calificaciones)
+          const letra: string = obtenerLetra(promedio)
+          const aprobado: boolean = estaAprobado(promedio)
 
-        <div className="mt-5 space-y-2">
-          {ALUMNOS.map((alumno) => {
-            const promedio: number = calcularPromedio(alumno.calificaciones)
-            const letra: string = obtenerLetra(promedio)
-            const aprobado: boolean = estaAprobado(promedio)
+          return (
+            <div
+              key={alumno.nombre}
+              className="rounded-md border border-gray-200 bg-gray-50 p-3"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-sm font-semibold text-gray-800">
+                  {alumno.nombre}
+                </p>
+                <span className="rounded border border-gray-300 bg-white px-2 py-1 text-sm font-bold text-gray-700">
+                  {letra}
+                </span>
+              </div>
 
-            return (
-              <article
-                key={alumno.nombre}
-                className="rounded-md border border-zinc-800 bg-zinc-950 p-3"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex min-w-0 items-center gap-2.5">
-                    <span className="flex size-7 shrink-0 items-center justify-center rounded-md border border-zinc-800 bg-zinc-900 font-mono text-[10px] text-zinc-400">
-                      {alumno.nombre.charAt(0)}
-                    </span>
-                    <div className="min-w-0">
-                      <p className="truncate text-xs font-medium text-zinc-200">
-                        {alumno.nombre}
-                      </p>
-                      <p className="font-mono text-[9px] text-zinc-600">
-                        {alumno.calificaciones.join(' · ')}
-                      </p>
-                    </div>
-                  </div>
-                  <span className="flex size-7 shrink-0 items-center justify-center rounded-md border border-zinc-700 bg-zinc-800 font-mono text-xs font-semibold text-zinc-100">
-                    {letra}
-                  </span>
-                </div>
+              <p className="mt-1 text-xs text-gray-500">
+                Calificaciones: {alumno.calificaciones.join(', ')}
+              </p>
 
-                <div className="mt-2.5 flex items-center justify-between border-t border-zinc-800/70 pt-2">
-                  <p className="font-mono text-[9px] uppercase tracking-wider text-zinc-600">
-                    avg{' '}
-                    <span className="ml-1 text-sm tabular-nums text-white">
-                      {promedio.toFixed(1)}
-                    </span>
-                  </p>
-                  <span
-                    className={`inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-wider ${
-                      aprobado ? 'text-zinc-200' : 'text-zinc-600'
-                    }`}
-                  >
-                    <span
-                      className={`size-1 rounded-full ${
-                        aprobado ? 'bg-white' : 'bg-zinc-700'
-                      }`}
-                    />
-                    {aprobado ? 'aprobado' : 'reprobado'}
-                  </span>
-                </div>
-              </article>
-            )
-          })}
-        </div>
-
-        <p className="mt-auto pt-3 font-mono text-[9px] leading-4 text-zinc-600">
-          scale: A ≥ 90 · B 80–89.99 · C 70–79.99 · D 60–69.99 · F &lt; 60
-        </p>
+              <div className="mt-2 flex items-center justify-between gap-3 text-sm">
+                <span className="text-gray-600">
+                  Promedio:{' '}
+                  <strong className="text-gray-800">
+                    {promedio.toFixed(1)}
+                  </strong>
+                </span>
+                <span
+                  className={`font-medium ${
+                    aprobado ? 'text-green-600' : 'text-red-500'
+                  }`}
+                >
+                  {aprobado ? 'Aprobado' : 'Reprobado'}
+                </span>
+              </div>
+            </div>
+          )
+        })}
       </div>
+
+      <p className="mt-3 text-xs text-gray-500">
+        A: 90 o más · B: 80 a 89.99 · C: 70 a 79.99 · D: 60 a 69.99 · F: menos
+        de 60.
+      </p>
     </section>
   )
 }

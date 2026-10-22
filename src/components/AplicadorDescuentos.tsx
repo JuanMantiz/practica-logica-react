@@ -1,27 +1,22 @@
 const PRECIO_BASE: number = 1000
 
-/** Formatea un valor numérico como moneda mexicana. */
-const formatearMoneda = (valor: number): string =>
-  new Intl.NumberFormat('es-MX', {
-    style: 'currency',
-    currency: 'MXN',
-    minimumFractionDigits: 2,
-  }).format(valor)
+// Formatea el valor como moneda
+const formatearMoneda = (valor: number): string => `$${valor.toFixed(2)}`
 
-/** Aplica un callback de descuento al precio recibido (función de orden superior). */
-const aplicarDescuento = (
-  precio: number,
-  calcularDescuento: (precio: number) => number,
-): number => calcularDescuento(precio)
-
-/** Aplica un descuento del 10 % y devuelve el precio final. */
+// Aplica un descuento del 10 %
 const descuento10 = (precio: number): number => precio * 0.9
 
-/** Aplica un descuento del 25 % y devuelve el precio final. */
+// Aplica un descuento del 25 %
 const descuento25 = (precio: number): number => precio * 0.75
 
-/** Aplica el descuento de estudiante del 15 % y devuelve el precio final. */
+// Aplica el descuento de estudiante
 const descuentoEstudiante = (precio: number): number => precio * 0.85
+
+// Aplica el descuento recibido al precio
+const aplicarDescuento = (
+  precio: number,
+  calcularDescuento = descuento10,
+): number => calcularDescuento(precio)
 
 const DESCUENTOS = [
   {
@@ -37,98 +32,56 @@ const DESCUENTOS = [
     calcular: descuento25,
   },
   {
-    etiqueta: 'Descuento estudiante',
+    etiqueta: 'Descuento de estudiante',
     porcentaje: 15,
     funcion: 'descuentoEstudiante',
     calcular: descuentoEstudiante,
   },
 ]
 
-/**
- * Ejercicio 08: aplicador de descuentos con funciones de orden superior.
- * Aplica tres callbacks distintos a un precio base de $1,000.
- */
+// Muestra los descuentos aplicados
 export const AplicadorDescuentos = () => {
   return (
-    <section className="group flex h-full flex-col overflow-hidden rounded-lg border border-zinc-800 bg-[#111111] transition-all duration-200 hover:border-zinc-700 hover:bg-zinc-900">
-      <header className="flex items-center justify-between border-b border-zinc-800/80 px-5 py-3">
-        <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.16em]">
-          <span className="text-zinc-600">08</span>
-          <span className="text-zinc-700">/</span>
-          <span className="text-zinc-400">pricing</span>
-        </div>
-        <div className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-wider text-zinc-600">
-          <span className="size-1 rounded-full bg-zinc-600 transition-colors group-hover:bg-white" />
-          ready
-        </div>
-      </header>
+    <section className="mb-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+      <h2 className="text-xl font-bold text-gray-800">
+        Aplicador de descuentos
+      </h2>
+      <p className="mt-1 text-sm text-gray-500">
+        Precio base: <strong className="text-gray-700">{formatearMoneda(PRECIO_BASE)}</strong>
+      </p>
 
-      <div className="flex flex-1 flex-col p-5">
-        <h2 className="text-[15px] font-semibold tracking-tight text-white">
-          Aplicador de descuentos
-        </h2>
-        <p className="mt-1 text-xs leading-5 text-zinc-500">
-          Una función de orden superior recibe el precio y el callback.
-        </p>
+      <div className="mt-4 space-y-2">
+        {DESCUENTOS.map((descuento) => {
+          const precioFinal: number = aplicarDescuento(
+            PRECIO_BASE,
+            descuento.calcular,
+          )
 
-        <div className="mt-5 rounded-md border border-zinc-800 bg-zinc-950 p-3.5">
-          <div className="flex items-center justify-between font-mono text-[9px] uppercase tracking-wider text-zinc-600">
-            <span>input</span>
-            <span className="text-zinc-700">MXN</span>
-          </div>
-          <div className="mt-2 flex items-baseline justify-between gap-4">
-            <span className="font-mono text-[10px] text-zinc-500">
-              precio base
-            </span>
-            <span className="font-mono text-xl font-medium tabular-nums text-white">
-              {formatearMoneda(PRECIO_BASE)}
-            </span>
-          </div>
-        </div>
-
-        <div className="mt-2 space-y-2">
-          {DESCUENTOS.map((descuento) => {
-            const precioFinal: number = aplicarDescuento(
-              PRECIO_BASE,
-              descuento.calcular,
-            )
-            const ahorro: number = PRECIO_BASE - precioFinal
-
-            return (
-              <div
-                key={descuento.funcion}
-                className="rounded-md border border-zinc-800 bg-zinc-950 p-3"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <span className="truncate font-mono text-[10px] text-zinc-400">
-                    {descuento.funcion}(precio)
-                  </span>
-                  <span className="shrink-0 font-mono text-[9px] text-zinc-600">
-                    −{descuento.porcentaje}%
-                  </span>
-                </div>
-                <div className="mt-1.5 flex items-end justify-between gap-3">
-                  <div className="min-w-0">
-                    <p className="truncate text-[10px] text-zinc-500">
-                      {descuento.etiqueta}
-                    </p>
-                    <p className="font-mono text-[9px] text-zinc-700 line-through">
-                      {formatearMoneda(PRECIO_BASE)}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-mono text-lg font-medium tabular-nums text-white">
-                      {formatearMoneda(precioFinal)}
-                    </p>
-                    <p className="font-mono text-[8px] text-zinc-600">
-                      save {formatearMoneda(ahorro)}
-                    </p>
-                  </div>
-                </div>
+          return (
+            <div
+              key={descuento.funcion}
+              className="flex items-center justify-between gap-3 rounded-md border border-gray-200 bg-gray-50 p-3"
+            >
+              <div className="min-w-0">
+                <p className="truncate text-sm font-medium text-gray-700">
+                  {descuento.etiqueta}
+                </p>
+                <p className="text-xs text-gray-500">
+                  {descuento.funcion}(precio) · {descuento.porcentaje}%
+                </p>
               </div>
-            )
-          })}
-        </div>
+
+              <div className="shrink-0 text-right">
+                <p className="text-xs text-gray-400 line-through">
+                  {formatearMoneda(PRECIO_BASE)}
+                </p>
+                <p className="text-lg font-bold text-gray-800">
+                  {formatearMoneda(precioFinal)}
+                </p>
+              </div>
+            </div>
+          )
+        })}
       </div>
     </section>
   )

@@ -6,29 +6,21 @@ const CARRITO = [
 
 const TASA_IVA: number = 0.16
 
-/** Calcula el subtotal de un producto multiplicando precio por cantidad. */
+// Calcula el subtotal del producto
 const calcularSubtotal = (precio: number, cantidad: number): number =>
   precio * cantidad
 
-/** Calcula el IVA del 16 % sobre un subtotal. */
+// Calcula el IVA del subtotal
 const calcularIVA = (subtotal: number): number => subtotal * TASA_IVA
 
-/** Calcula el total a pagar sumando el IVA al subtotal. */
+// Calcula el total con IVA
 const calcularTotal = (subtotal: number): number =>
   subtotal + calcularIVA(subtotal)
 
-/** Formatea un número como precio en pesos mexicanos. */
-const formatearPrecio = (valor: number): string =>
-  new Intl.NumberFormat('es-MX', {
-    style: 'currency',
-    currency: 'MXN',
-    minimumFractionDigits: 2,
-  }).format(valor)
+// Formatea el precio en pesos
+const formatearPrecio = (valor: number): string => `$${valor.toFixed(2)}`
 
-/**
- * Ejercicio 10: carrito de compras con cálculo de IVA.
- * Usa reduce para obtener el subtotal general de todos los productos.
- */
+// Muestra el resumen del carrito
 export const CarritoCompras = () => {
   const subtotalGeneral: number = CARRITO.reduce(
     (subtotal: number, producto): number =>
@@ -43,87 +35,47 @@ export const CarritoCompras = () => {
   )
 
   return (
-    <section className="group flex h-full flex-col overflow-hidden rounded-lg border border-zinc-800 bg-[#111111] transition-all duration-200 hover:border-zinc-700 hover:bg-zinc-900">
-      <header className="flex items-center justify-between border-b border-zinc-800/80 px-5 py-3">
-        <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.16em]">
-          <span className="text-zinc-600">10</span>
-          <span className="text-zinc-700">/</span>
-          <span className="text-zinc-400">cart</span>
-        </div>
-        <div className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-wider text-zinc-600">
-          <span className="size-1 rounded-full bg-zinc-600 transition-colors group-hover:bg-white" />
-          ready
-        </div>
-      </header>
+    <section className="mb-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+      <h2 className="text-xl font-bold text-gray-800">Carrito de compras</h2>
+      <p className="mt-1 text-sm text-gray-500">
+        Subtotal por producto, IVA del 16 % y total a pagar.
+      </p>
 
-      <div className="flex flex-1 flex-col p-5">
-        <h2 className="text-[15px] font-semibold tracking-tight text-white">
-          Carrito de compras
-        </h2>
-        <p className="mt-1 text-xs leading-5 text-zinc-500">
-          Subtotal por producto, IVA del 16 % y total general.
-        </p>
-
-        <div className="mt-5 overflow-hidden rounded-md border border-zinc-800 bg-zinc-950">
-          <div className="flex items-center justify-between border-b border-zinc-800 px-3 py-2 font-mono text-[9px] uppercase tracking-wider text-zinc-600">
-            <span>item / qty</span>
-            <span className="text-zinc-700">subtotal</span>
-          </div>
-
-          {CARRITO.map((producto, indice: number) => (
-            <div
-              key={producto.id}
-              className="flex items-center gap-3 border-b border-zinc-800/70 px-3 py-2.5 last:border-b-0"
-            >
-              <span className="flex size-7 shrink-0 items-center justify-center rounded border border-zinc-800 bg-zinc-900 font-mono text-[9px] text-zinc-500">
-                {String(indice + 1).padStart(2, '0')}
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-xs font-medium text-zinc-200">
-                  {producto.nombre}
-                </p>
-                <p className="font-mono text-[9px] text-zinc-600">
-                  {formatearPrecio(producto.precio)} × {producto.cantidad}
-                </p>
-              </div>
-              <p className="font-mono text-xs tabular-nums text-zinc-200">
-                {formatearPrecio(
-                  calcularSubtotal(producto.precio, producto.cantidad),
-                )}
+      <div className="mt-4 overflow-hidden rounded-md border border-gray-200">
+        {CARRITO.map((producto) => (
+          <div
+            key={producto.id}
+            className="flex items-center justify-between gap-3 border-b border-gray-200 bg-gray-50 px-3 py-2 last:border-b-0"
+          >
+            <div className="min-w-0">
+              <p className="truncate text-sm font-medium text-gray-700">
+                {producto.nombre}
+              </p>
+              <p className="text-xs text-gray-500">
+                {formatearPrecio(producto.precio)} × {producto.cantidad}
               </p>
             </div>
-          ))}
-        </div>
-
-        <div className="mt-2 rounded-md border border-zinc-800 bg-black p-4">
-          <div className="space-y-1.5 font-mono text-[10px]">
-            <div className="flex items-center justify-between text-zinc-600">
-              <span>subtotal</span>
-              <span className="tabular-nums text-zinc-300">
-                {formatearPrecio(subtotalGeneral)}
-              </span>
-            </div>
-            <div className="flex items-center justify-between text-zinc-600">
-              <span>iva[16%]</span>
-              <span className="tabular-nums text-zinc-300">
-                {formatearPrecio(iva)}
-              </span>
-            </div>
-          </div>
-
-          <div className="mt-3 flex items-end justify-between gap-3 border-t border-zinc-800 pt-3">
-            <div>
-              <p className="font-mono text-[9px] uppercase tracking-wider text-zinc-600">
-                total
-              </p>
-              <p className="mt-0.5 font-mono text-[9px] text-zinc-700">
-                {cantidadArticulos} artículos
-              </p>
-            </div>
-            <p className="font-mono text-2xl font-medium tabular-nums tracking-tight text-white">
-              {formatearPrecio(total)}
+            <p className="shrink-0 text-sm font-semibold text-gray-800">
+              {formatearPrecio(
+                calcularSubtotal(producto.precio, producto.cantidad),
+              )}
             </p>
           </div>
+        ))}
+      </div>
+
+      <div className="mt-3 rounded-md border border-gray-200 bg-gray-50 p-3">
+        <div className="flex items-center justify-between text-sm text-gray-600">
+          <span>Subtotal ({cantidadArticulos} artículos)</span>
+          <span>{formatearPrecio(subtotalGeneral)}</span>
+        </div>
+        <div className="mt-1 flex items-center justify-between text-sm text-gray-600">
+          <span>IVA (16 %)</span>
+          <span>{formatearPrecio(iva)}</span>
+        </div>
+        <div className="mt-2 flex items-center justify-between border-t border-gray-300 pt-2 text-base font-bold text-gray-800">
+          <span>Total</span>
+          <span>{formatearPrecio(total)}</span>
         </div>
       </div>
     </section>
